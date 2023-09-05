@@ -57,7 +57,7 @@ db.Comment = insertModel("./comment");
 db.Follow = insertModel("./follow");
 db.Message = insertModel("./message");
 db.Post = insertModel("./post");
-db.PostLike = insertModel("./postlike");
+db.PostLike = insertModel("./postLike");
 db.User = insertModel("./user");
 
 module.exports = db;
