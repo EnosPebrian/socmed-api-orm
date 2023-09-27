@@ -141,7 +141,8 @@ class UserController extends Controller {
 
   async keepLogin(req, res) {
     try {
-      const { token } = req.params;
+      console.log(req.token);
+      const { token } = req;
       const data = jwt.verify(token, process.env.jwt_secret);
       if (!data?.id) throw new Error("invalid token");
 

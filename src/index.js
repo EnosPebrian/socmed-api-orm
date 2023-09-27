@@ -6,9 +6,11 @@ const PORT = process.env.PORT;
 const router = require(`./router`);
 const db = require("./sequelize/models");
 const moment = require("moment-timezone");
+const bearerToken = require("express-bearer-token");
 
 app.use(express.json());
 app.use(cors());
+app.use(bearerToken());
 app.use(`/user`, router.userRoutes);
 app.use(`/post`, router.postRoutes);
 app.use(`/public/avatars`, express.static(`${__dirname}/public/images/avatar`));
