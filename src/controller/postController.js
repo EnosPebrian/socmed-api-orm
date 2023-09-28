@@ -12,6 +12,7 @@ class PostController extends Controller {
     const limit = 12;
     this.db
       .findAndCountAll({
+        logging: false,
         where: { user_id },
         limit: limit,
         offset: page ? Number(page) * limit : 0,
