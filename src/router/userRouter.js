@@ -10,12 +10,6 @@ route.get(`/token`, userController.keepLogin.bind(userController));
 route.get(`/render_image`, userController.renderImage.bind(userController));
 route.get(`/:id`, userController.getById.bind(userController));
 
-// route.patch(
-//   `/:id`,
-//   userController.update.bind(userController),
-//   userController.getById.bind(userController)
-// );
-
 route.post(`/auth`, userController.login.bind(userController));
 route.post(
   `/resend/:id`,

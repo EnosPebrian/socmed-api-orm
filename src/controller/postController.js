@@ -26,10 +26,10 @@ class PostController extends Controller {
   async getPostByUsername(req, res) {
     const { username } = req.params;
     const user = await db.User.findOne({ where: { username } });
-    const { page } = req.query;
-    const limit = 12;
-    this.db
+    const { page, limit } = req.query;
+    await this.db
       .findAndCountAll({
+        logging: false,
         where: { user_id: user.dataValues.id },
         limit: limit * (page ? Number(page) : 1),
         order: [["createdAt", "DESC"]],
@@ -45,9 +45,9 @@ class PostController extends Controller {
 
   async getByQuery(req, res) {
     const { text, limit, page, user_id } = req.query;
-
-    this.db
+    await this.db
       .findAndCountAll({
+        logging: false,
         order: [["createdAt", "DESC"]],
         limit: limit
           ? Number(limit) * (page ? Number(page) : 1)
@@ -72,7 +72,7 @@ class PostController extends Controller {
       })
       .then((result) =>
         res.send({
-          number_of_page: Math.ceil(result.count / (limit ? limit : 5)),
+          count: result.count,
           data: result.rows,
         })
       )
@@ -82,6 +82,7 @@ class PostController extends Controller {
   async createPost(req, res) {
     await this.db
       .create({
+        logging: false,
         caption: req.body.caption,
         image_url: req?.file?.filename,
         user_id: req.body.user_id,

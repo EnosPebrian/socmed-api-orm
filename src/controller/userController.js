@@ -169,9 +169,9 @@ class UserController extends Controller {
 
   async editProfile(req, res) {
     const { id } = req.params;
-    req.body.image_url = req.file.filename;
+    if (req.file.filename) req.body.image_url = req.file.filename;
     await this.db
-      .findOne({ where: { username: req.body.username } })
+      .findOne({ where: { username: req.body.username }, logging: false })
       .then(async (result) => {
         if (result && result?.dataValues?.id != id)
           throw new Error("Username has been used");
