@@ -13,15 +13,15 @@ class UserController extends Controller {
   constructor(model) {
     super(model);
   }
-  selfupdate(req, res) {
+  async selfupdate(req, res) {
     const { id } = req.params;
-    this.db.update({ ...req.body }, { where: { id } });
+    await this.db.update({ ...req.body }, { where: { id } });
   }
   login(req, res) {
     const { accountID, password } = req.body;
-
     this.db
       .findOne({
+        logging: false,
         attributes: {
           include: [
             [
@@ -90,6 +90,7 @@ class UserController extends Controller {
           );
         }
         delete result?.dataValues?.password;
+        console.log(result.dataValues);
         const payload = {
           id: result?.dataValues?.id,
           is_verified: result?.dataValues?.is_verified,
@@ -141,7 +142,6 @@ class UserController extends Controller {
 
   async keepLogin(req, res) {
     try {
-      console.log(req.token);
       const { token } = req;
       const data = jwt.verify(token, process.env.jwt_secret);
       if (!data?.id) throw new Error("invalid token");

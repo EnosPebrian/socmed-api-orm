@@ -45,7 +45,6 @@ class PostController extends Controller {
 
   async getByQuery(req, res) {
     const { text, limit, page, user_id } = req.query;
-    console.log(limit, page);
 
     this.db
       .findAndCountAll({
