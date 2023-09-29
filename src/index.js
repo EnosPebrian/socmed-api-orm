@@ -23,13 +23,13 @@ app.use(`/message`, router.messageRoutes);
 const server = require("http").createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: { origin: "http://192.168.11.13:3000" },
 });
 global.io = io;
 
 server.listen(PORT, () => {
   console.log(`server is online on PORT ${PORT}`);
-  // db.sequelize.sync({ alter: true });
+  // db.sequelize.sync({ force: true });
 });
 
 app.get("/", (req, res) => {
