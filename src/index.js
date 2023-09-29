@@ -23,7 +23,7 @@ app.use(`/message`, router.messageRoutes);
 const server = require("http").createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
-  cors: { origin: "http://192.168.11.13:3000" },
+  cors: { origin: "*" },
 });
 global.io = io;
 
