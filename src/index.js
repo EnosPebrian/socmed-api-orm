@@ -22,7 +22,9 @@ app.use(`/message`, router.messageRoutes);
 
 const server = require("http").createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, {
+  cors: { origin: "https://api-socmed.crystalux.site/" },
+});
 global.io = io;
 
 server.listen(PORT, () => {
