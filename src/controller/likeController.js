@@ -9,7 +9,7 @@ class LikeController extends Controller {
     const { post_id } = req.params;
     const { user_id } = req.query;
     await this.db
-      .findOne({ where: { post_id, user_id } })
+      .findOne({ logging: false, where: { post_id, user_id } })
       .then((result) => {
         if (result) return res.send({ result: true });
         return res.send({ result: false });
@@ -28,6 +28,7 @@ class LikeController extends Controller {
           await this.db
             .create({
               ...{ post_id, user_id },
+              logging: false,
             })
             .then((result) => res.send({ result: true }))
             .catch((err) => res.status(400).send(err?.message));
@@ -36,6 +37,7 @@ class LikeController extends Controller {
           await this.db
             .destroy({
               where: { post_id, user_id },
+              logging: false,
             })
             .then((result) => res.send({ result: false }))
             .catch((err) => res.status(400).send(err?.message));

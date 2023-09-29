@@ -8,6 +8,10 @@ const { userValidationRules, validate } = require("../middlewares/validator");
 route.get(`/`, userController.getAll.bind(userController));
 route.get(`/token`, userController.keepLogin.bind(userController));
 route.get(`/render_image`, userController.renderImage.bind(userController));
+route.get(
+  `/username/:username`,
+  userController.getByUserName.bind(userController)
+);
 route.get(`/:id`, userController.getById.bind(userController));
 
 route.post(`/auth`, userController.login.bind(userController));

@@ -11,6 +11,7 @@ class CommentController extends Controller {
     const { page } = req.query;
     this.db
       .findAndCountAll({
+        logging: false,
         attributes: {
           include: [
             [

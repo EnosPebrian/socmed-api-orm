@@ -17,7 +17,7 @@ class UserController extends Controller {
     const { id } = req.params;
     await this.db.update({ ...req.body }, { where: { id } });
   }
-  login(req, res) {
+  async login(req, res) {
     const { accountID, password } = req.body;
     this.db
       .findOne({
@@ -112,11 +112,26 @@ class UserController extends Controller {
       })
       .catch((err) => res.status(400).send(err?.message));
   }
+
+  async getByUserName(req, res) {
+    const { username } = req.params;
+    try {
+      const user = await this.db.findOne({
+        where: { username },
+        logging: false,
+      });
+      return res.send(user);
+    } catch (err) {
+      return res.status(500).send(err?.message);
+    }
+  }
+
   async register(req, res) {
     const { email, username, phone_number, password, passwordConfirmation } =
       req.body;
     try {
       const isUserExist = await db.User.findOne({
+        logging: false,
         where: {
           [Op.or]: [
             { username: username },
@@ -147,6 +162,7 @@ class UserController extends Controller {
       if (!data?.id) throw new Error("invalid token");
 
       const payload = await this.db.findOne({
+        logging: false,
         where: {
           id: data.id,
         },
@@ -183,9 +199,7 @@ class UserController extends Controller {
 
   async renderImage(req, res) {
     const { username } = req.query;
-    await db.User.findOne({
-      where: { username },
-    })
+    await db.User.findOne({ logging: false, where: { username } })
       .then((result) => {
         res.set("Content-type", "image/png");
         res.send(result?.dataValues?.avatar_blob);
@@ -195,7 +209,7 @@ class UserController extends Controller {
 
   async resendVerification(req, res) {
     const { id } = req.params;
-    const user = await db.User.findOne({ where: { id } });
+    const user = await db.User.findOne({ logging: false, where: { id } });
 
     const template = fs
       .readFileSync(__dirname + "/../template/verify.html")
@@ -208,7 +222,10 @@ class UserController extends Controller {
     );
 
     user.dataValues.verification_token = token;
-    await db.User.update({ ...user.dataValues }, { where: { id } });
+    await db.User.update(
+      { ...user.dataValues },
+      { logging: false, where: { id } }
+    );
 
     const renderTemplate = mustache.render(template, {
       username: user.dataValues.username,
@@ -229,6 +246,7 @@ class UserController extends Controller {
     try {
       const { token } = req.query;
       const user = await this.db.findOne({
+        logging: false,
         where: { verification_token: token },
       });
       if (!user || user?.dataValues.verification_token != token)
@@ -240,7 +258,7 @@ class UserController extends Controller {
       if (payload.is_verified) throw new Error(`User is already verified`);
       await this.db.update(
         { is_verified: true },
-        { where: { id: payload.id } }
+        { logging: false, where: { id: payload.id } }
       );
 
       return res.send("User has been verified");
@@ -252,7 +270,7 @@ class UserController extends Controller {
   async resetPasswordVerification(req, res) {
     try {
       const { email } = req.params;
-      const user = await db.User.findOne({ where: { email } });
+      const user = await db.User.findOne({ logging: false, where: { email } });
       const token = jwt.sign(
         { email: user.dataValues.email },
         process.env.jwt_secret,
@@ -265,7 +283,10 @@ class UserController extends Controller {
 
       user.dataValues.reset_password_token = token;
 
-      await db.User.update({ ...user.dataValues }, { where: { email } });
+      await db.User.update(
+        { ...user.dataValues },
+        { logging: false, where: { email } }
+      );
 
       const renderTemplate = mustache.render(template, {
         username: user.dataValues.username,
@@ -292,6 +313,7 @@ class UserController extends Controller {
       const { token } = req.params;
       const payload = jwt.verify(token, process.env.jwt_secret);
       const user = await this.db.findOne({
+        logging: false,
         where: { email: payload.email, reset_password_token: token },
       });
       if (!user)
@@ -302,7 +324,7 @@ class UserController extends Controller {
         throw new Error("Your password does not match");
       await this.db.update(
         { reset_password_token: "", password: req.body.password },
-        { where: { email: user.dataValues.email } }
+        { logging: false, where: { email: user.dataValues.email } }
       );
       return res.send("Reset password success");
     } catch (err) {
@@ -317,9 +339,7 @@ class UserController extends Controller {
       req.body.image_url = req.file.originalname;
     }
 
-    await db.User.update(req.body, {
-      where: { id },
-    })
+    await db.User.update(req.body, { logging: false, where: { id } })
       .then(() => next())
       .catch((err) => res.status(422).send(err?.message));
   }
