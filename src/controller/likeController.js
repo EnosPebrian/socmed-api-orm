@@ -5,6 +5,15 @@ class LikeController extends Controller {
   constructor(model) {
     super(model);
   }
+
+  async totalLike(req, res) {
+    const { post_id } = req.params;
+    await this.db
+      .count({ where: { post_id } })
+      .then((result) => res.send(result))
+      .catch((err) => res.status(500).send(err?.message));
+  }
+
   async isLiked(req, res) {
     const { post_id } = req.params;
     const { user_id } = req.query;
