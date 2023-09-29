@@ -1,5 +1,6 @@
 const Controller = require("./Controller");
 const db = require(`../sequelize/models`);
+const { Op } = require("sequelize");
 
 class MessageController extends Controller {
   constructor(model) {
@@ -13,8 +14,12 @@ class MessageController extends Controller {
     const limit = 50;
     try {
       const result = await this.db.findAll({
+        order: [["createdAt", "DESC"]],
         logging: false,
-        where: { user_sender_id: sender, user_reciever_id: receiver },
+        where: {
+          user_sender_id: { [Op.or]: [sender, receiver] },
+          user_reciever_id: { [Op.or]: [sender, receiver] },
+        },
         limit: limit,
         offset: limit * page ? page - 1 : 0,
       });
