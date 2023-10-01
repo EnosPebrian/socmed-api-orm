@@ -2,6 +2,7 @@ const Controller = require(`./Controller`);
 const db = require(`../sequelize/models`);
 const { Op } = require(`sequelize`);
 const sharp = require("sharp");
+const moment = require("moment");
 
 class PostController extends Controller {
   constructor(table) {
