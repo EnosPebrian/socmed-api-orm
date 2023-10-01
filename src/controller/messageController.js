@@ -42,7 +42,21 @@ class MessageController extends Controller {
       });
       const chatroom = [sender, receiver].sort((a, b) => a - b);
       global.io?.emit(`chatroom_` + chatroom, new_message.dataValues);
+      global.io?.emit(`newMessage_` + receiver, "new_message");
       return res.send(new_message);
+    } catch (err) {
+      return res.status(500).send(err?.message);
+    }
+  };
+
+  getChatRoom = async (req, res) => {
+    const user_id = Number(req.params.user_id);
+    try {
+      const { dataValues } = await this.db.findAll({
+        where: { user_sender_id: user_id },
+        group: ["user_receiver_id"],
+      });
+      return res.send(dataValues);
     } catch (err) {
       return res.status(500).send(err?.message);
     }
