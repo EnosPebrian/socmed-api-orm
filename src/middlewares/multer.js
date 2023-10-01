@@ -19,13 +19,13 @@ const fileUploader = ({
 
   const uploader = multer({
     storage: storageConfig,
+    limits: { fieldSize: 25 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
       if (file.mimetype.split("/")[0] != filetype) {
         return cb(null, false);
       }
       return cb(null, true);
     },
-    limits: 100000,
   });
 
   return uploader;
@@ -39,7 +39,7 @@ const blobUploader = ({ filetype }) => {
       }
       return cb(null, true);
     },
-    limits: 100000,
+    limits: { fieldSize: 25 * 1024 * 1024 },
   });
 };
 
