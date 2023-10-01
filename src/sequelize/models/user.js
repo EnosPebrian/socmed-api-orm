@@ -34,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_sender_id",
       });
       User.hasMany(models.Message, {
-        as: "message_recievers",
-        foreignKey: "user_reciever_id",
+        as: "message_receivers",
+        foreignKey: "user_receiver_id",
       });
 
       User.hasMany(models.PostLike, {

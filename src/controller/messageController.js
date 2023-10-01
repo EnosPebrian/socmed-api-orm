@@ -18,7 +18,7 @@ class MessageController extends Controller {
         logging: false,
         where: {
           user_sender_id: { [Op.or]: [sender, receiver] },
-          user_reciever_id: { [Op.or]: [sender, receiver] },
+          user_receiver_id: { [Op.or]: [sender, receiver] },
         },
         limit: limit,
         offset: limit * page ? page - 1 : 0,
@@ -33,16 +33,15 @@ class MessageController extends Controller {
     const receiver = Number(req.query.receiver);
     const sender = Number(req.query.sender);
     const { message } = req.body;
-    console.log(message, receiver, sender);
     try {
       const new_message = await this.db.create({
         user_sender_id: sender,
-        user_reciever_id: receiver,
+        user_receiver_id: receiver,
         message: message,
       });
       const chatroom = [sender, receiver].sort((a, b) => a - b);
       global.io?.emit(`chatroom_` + chatroom, new_message.dataValues);
-      global.io?.emit(`newMessage_` + receiver, "new_message");
+      global.io?.emit(`newMessage_` + receiver, sender);
       return res.send(new_message);
     } catch (err) {
       return res.status(500).send(err?.message);
@@ -52,11 +51,17 @@ class MessageController extends Controller {
   getChatRoom = async (req, res) => {
     const user_id = Number(req.params.user_id);
     try {
-      const { dataValues } = await this.db.findAll({
+      const result = await this.db.findAll({
+        attributes: ["user_receiver_id", "user_sender_id"],
         where: { user_sender_id: user_id },
         group: "user_receiver_id",
+        include: {
+          model: db.User,
+          as: `user_receivers`,
+          attributes: ["username"],
+        },
       });
-      return res.send(dataValues);
+      return res.send(result);
     } catch (err) {
       return res.status(500).send(err?.message);
     }

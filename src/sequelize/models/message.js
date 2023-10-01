@@ -15,15 +15,15 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       Message.belongsTo(models.User, {
-        as: "user_recievers",
-        foreignKey: "user_reciever_id",
+        as: "user_receivers",
+        foreignKey: "user_receiver_id",
       });
     }
   }
   Message.init(
     {
       user_sender_id: DataTypes.INTEGER,
-      user_reciever_id: DataTypes.INTEGER,
+      user_receiver_id: DataTypes.INTEGER,
       message: DataTypes.STRING,
     },
     {

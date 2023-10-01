@@ -29,7 +29,7 @@ global.io = io;
 
 server.listen(PORT, () => {
   console.log(`server is online on PORT ${PORT}`);
-  // db.sequelize.sync({ force: true });
+  // db.sequelize.sync({ alter: true });
 });
 
 app.get("/", (req, res) => {
