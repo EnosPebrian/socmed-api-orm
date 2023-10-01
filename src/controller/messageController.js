@@ -54,7 +54,7 @@ class MessageController extends Controller {
     try {
       const { dataValues } = await this.db.findAll({
         where: { user_sender_id: user_id },
-        group: ["user_receiver_id"],
+        group: "user_receiver_id",
       });
       return res.send(dataValues);
     } catch (err) {
