@@ -1,6 +1,6 @@
 const postController = require(`../controller/postController`);
 const check_verified = require("../middlewares/check_verified");
-const { fileUploader } = require("../middlewares/multer");
+const { fileUploader, blobUploader } = require("../middlewares/multer");
 const route = require(`express`).Router();
 
 route.get(`/`, postController.getAll.bind(postController));
@@ -18,13 +18,20 @@ route.patch(
   postController.getById.bind(postController)
 );
 
+// route.post(
+//   `/new_post`,
+//   fileUploader({
+//     destinationFolder: "post",
+//     prefix: "POST",
+//     filetype: "image",
+//   }).single("image"),
+//   check_verified,
+//   postController.createPost.bind(postController)
+// );
+
 route.post(
   `/new_post`,
-  fileUploader({
-    destinationFolder: "post",
-    prefix: "POST",
-    filetype: "image",
-  }).single("image"),
+  blobUploader({ filetype: "image" }).single("image"),
   check_verified,
   postController.createPost.bind(postController)
 );

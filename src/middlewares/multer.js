@@ -25,7 +25,7 @@ const fileUploader = ({
       }
       return cb(null, true);
     },
-    limits: 900000,
+    limits: 100000,
   });
 
   return uploader;

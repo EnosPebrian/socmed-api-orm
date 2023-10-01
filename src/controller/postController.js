@@ -1,6 +1,7 @@
 const Controller = require(`./Controller`);
 const db = require(`../sequelize/models`);
 const { Op } = require(`sequelize`);
+const sharp = require("sharp");
 
 class PostController extends Controller {
   constructor(table) {
@@ -81,6 +82,13 @@ class PostController extends Controller {
   }
 
   async createPost(req, res) {
+    if (req.file) {
+      req.file.filename = `POST_${moment().format("YYYY-MM-DD-HH-mm-ss")}.png`;
+      await sharp(req.file.buffer)
+        .png()
+        .resize(1000, null, { withoutEnlargement: true })
+        .toFile(`${__dirname}/../public/images/post/` + req.file.filename);
+    }
     await this.db
       .create({
         logging: false,
