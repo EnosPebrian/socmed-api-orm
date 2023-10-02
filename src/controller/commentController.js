@@ -24,7 +24,7 @@ class CommentController extends Controller {
             ],
           ],
         },
-        limit: 10 * (page ? page : 1),
+        limit: 10 * (page ? Number(page) : 1),
         where: { post_id },
         order: [["createdAt", "DESC"]],
         include: [

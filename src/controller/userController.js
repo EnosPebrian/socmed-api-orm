@@ -113,6 +113,26 @@ class UserController extends Controller {
       .catch((err) => res.status(400).send(err?.message));
   }
 
+  async getByQuery(req, res) {
+    const { name } = req.query;
+    const limit = 10;
+    try {
+      const result = await this.db.findAll({
+        where: {
+          [Op.or]: [
+            { username: { [Op.like]: `%${name}%` } },
+            { fullname: { [Op.like]: `%${name}%` } },
+          ],
+        },
+        limit: limit,
+        logging: false,
+      });
+      return res.send(result);
+    } catch (err) {
+      return res.status(500).send(err?.message);
+    }
+  }
+
   async getByUserName(req, res) {
     const { username } = req.params;
     try {
