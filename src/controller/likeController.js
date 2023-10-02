@@ -8,10 +8,12 @@ class LikeController extends Controller {
 
   async totalLike(req, res) {
     const post_id = Number(req.params.post_id);
-    await this.db
-      .count({ where: { post_id } })
-      .then((result) => res.send(result))
-      .catch((err) => res.status(500).send(err?.message));
+    try {
+      const result = await this.db.count({ where: { post_id } });
+      return res.send({ total: result });
+    } catch (err) {
+      return res.status(500).send(err?.message);
+    }
   }
 
   async isLiked(req, res) {
