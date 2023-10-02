@@ -53,7 +53,10 @@ class MessageController extends Controller {
     try {
       const result = await this.db.findAll({
         attributes: ["user_receiver_id", "user_sender_id"],
-        where: { user_sender_id: user_id },
+        where: {
+          user_sender_id: { [Op.or]: [sender, receiver] },
+          user_receiver_id: { [Op.or]: [sender, receiver] },
+        },
         group: "user_receiver_id",
         include: {
           model: db.User,
