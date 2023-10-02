@@ -56,12 +56,11 @@ class MessageController extends Controller {
         where: {
           [Op.or]: [{ user_sender_id: user_id }, { user_receiver_id: user_id }],
         },
-        group: "user_receiver_id",
-        include: {
-          model: db.User,
-          as: `user_receivers`,
-          attributes: ["username"],
-        },
+        group: ["user_receiver_id", "user_sender_id"],
+        include: [
+          { model: db.User, as: `user_receivers`, attributes: ["username"] },
+          { model: db.User, as: `user_senders`, attributes: ["username"] },
+        ],
       });
       return res.send(result);
     } catch (err) {
