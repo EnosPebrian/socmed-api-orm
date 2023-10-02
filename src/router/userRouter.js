@@ -1,8 +1,7 @@
 const userController = require(`../controller/userController`);
-const user = require("../sequelize/models/user");
 const route = require(`express`).Router();
 const registerValidator = require(`../middlewares/register_verificator`);
-const { fileUploader, blobUploader } = require("../middlewares/multer");
+const { blobUploader } = require("../middlewares/multer");
 const { userValidationRules, validate } = require("../middlewares/validator");
 
 route.get(`/`, userController.getByQuery.bind(userController));

@@ -1,6 +1,6 @@
 const postController = require(`../controller/postController`);
 const check_verified = require("../middlewares/check_verified");
-const { fileUploader, blobUploader } = require("../middlewares/multer");
+const { blobUploader } = require("../middlewares/multer");
 const route = require(`express`).Router();
 
 route.get(`/`, postController.getAll.bind(postController));
