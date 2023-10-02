@@ -7,8 +7,7 @@ class LikeController extends Controller {
   }
 
   async totalLike(req, res) {
-    const { post_id } = req.params;
-    console.log(req.params);
+    const post_id = Number(req.params.post_id);
     await this.db
       .count({ where: { post_id } })
       .then((result) => res.send(result))
